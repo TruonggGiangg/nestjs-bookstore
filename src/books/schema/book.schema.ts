@@ -8,10 +8,10 @@ export class Book {
     @Prop({ required: true, unique: true })
     title: string;
 
-    @Prop({ required: true })
+    @Prop({ type: [String] }) // Danh sách tác giả
     author: string[];
 
-    @Prop({ type: [{ type: Types.ObjectId, ref: 'Categories' }] })
+    @Prop({ type: [{ type: Types.ObjectId, ref: "Categories" }], required: true })
     categories: Types.ObjectId[];
 
     @Prop({ required: true })
@@ -21,75 +21,64 @@ export class Book {
     stock: number;
 
     @Prop()
-    description: string;
+    description?: string;
+
+    @Prop({ type: [String] }) // Danh sách ảnh bìa
+    coverImage?: string[];
 
     @Prop()
-    coverImage: string[];
+    logo?: string;
+
+    @Prop({
+        type: {
+            publisher: { type: String },
+            publishedYear: { type: Number },
+            pages: { type: Number },
+            language: { type: String },
+            isbn: { type: String }
+        }
+    })
+    attributes?: {
+        publisher?: string;
+        publishedYear?: number;
+        pages?: number;
+        language?: string;
+        isbn?: string;
+    };
 
     @Prop()
-    logo: string;
+    publishedDate?: Date;
 
     @Prop()
-    publishedDate: Date;
+    rating?: number;
+
+    @Prop({
+        type: [
+            { userId: Types.ObjectId, comment: String, rating: Number, createdAt: Date }
+        ]
+    })
+    reviews?: Array<{ userId: Types.ObjectId; comment: string; rating: number; createdAt: Date }>;
 
     @Prop()
-    rating: number;
-
-
-    @Prop({ type: [{ userId: mongoose.Schema.Types.ObjectId, comment: String, rating: Number, createdAt: Date }] })
-    reviews: Array<{ userId: mongoose.Schema.Types.ObjectId, comment: string, rating: number, createdAt: Date }>;
+    isDeleted?: boolean;
 
     @Prop()
-    createdAt?: Date
+    deletedAt?: Date;
 
-    @Prop()
-    updatedAt?: Date
+    @Prop({
+        type: { _id: Types.ObjectId, email: String }
+    })
+    createdBy?: { _id: Types.ObjectId; email: string };
 
-    @Prop()
-    isDeleted?: boolean
+    @Prop({
+        type: { _id: Types.ObjectId, email: String }
+    })
+    updatedBy?: { _id: Types.ObjectId; email: string };
 
-    @Prop()
-    deletedAt?: Date
-
-    @Prop({ type: Object })
-    createdBy?: {
-        _id: mongoose.Schema.Types.ObjectId,
-        email: string
-    }
-
-    @Prop({ type: Object })
-    updatedBy?: {
-        _id: mongoose.Schema.Types.ObjectId,
-        email: string
-    }
-
-    @Prop({ type: Object })
-    deletedBy?: {
-        _id: mongoose.Schema.Types.ObjectId,
-        email: string
-    }
+    @Prop({
+        type: { _id: Types.ObjectId, email: String }
+    })
+    deletedBy?: { _id: Types.ObjectId; email: string };
 }
 
-
 export const BookSchema = SchemaFactory.createForClass(Book);
-// "_id": ObjectId,
-// "title": "The Great Gatsby",
-// "author": ["F. Scott Fitzgerald"],
-// "categories": ["Classic", "Fiction"],
-// "price": 10.99,
-// "stock": 100,
-// "description": "A classic novel...",
-// "coverImage": "https://example.com/image.jpg",
-// "publishedDate": ISODate,
-// "rating": 4.5,
-// "reviews": [
-//   {
-//     "userId": ObjectId,
-//     "comment": "Great book!",
-//     "rating": 5,
-//     "createdAt": ISODate
-//   }
-// ],
-// "createdAt": ISODate,
-// "updatedAt": ISODate
-
