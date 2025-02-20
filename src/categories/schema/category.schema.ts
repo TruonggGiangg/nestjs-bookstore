@@ -1,21 +1,20 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose, { HydratedDocument } from "mongoose";
 
-export type PermissionsDocument = HydratedDocument<Permissions>;
+export type CategoryDocument = HydratedDocument<Category>;
+
 
 @Schema({ timestamps: true })
-export class Permissions {
-    @Prop({ required: true })
+export class Category {
+
+    @Prop({ required: true, unique: true })
     name: string;
 
-    @Prop({ required: true })
-    apiPath: string;
+    @Prop()
+    description: string;
 
-    @Prop({ required: true })
-    method: string;
-
-    @Prop({ required: true })
-    module: string;
+    @Prop()
+    image: string;
 
     @Prop()
     createdAt?: Date
@@ -49,4 +48,4 @@ export class Permissions {
 }
 
 
-export const PermissionsSchema = SchemaFactory.createForClass(Permissions);
+export const CategoriesSchema = SchemaFactory.createForClass(Category);

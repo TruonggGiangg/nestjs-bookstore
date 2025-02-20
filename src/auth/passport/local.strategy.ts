@@ -5,9 +5,11 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 
 
+
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-    constructor(private authService: AuthService) {
+    constructor(private authService: AuthService,
+    ) {
         super();
     }
     //b1
@@ -16,7 +18,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         if (!user) {
             throw new UnauthorizedException("Tài khoản hoặc mật khẩu không đúng");
         }
-        //gắn vào req.user
+        console.log(user)
         return user;
     }
 }

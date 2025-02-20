@@ -1,19 +1,20 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
-import { Book, BookDocument } from './schema/book.schema';
-import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
-import { InjectModel } from '@nestjs/mongoose';
+import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 import { iUser } from 'src/users/user.interface';
+import { InjectModel } from '@nestjs/mongoose';
+import { Category, CategoryDocument } from './schema/category.schema';
+import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import aqp from 'api-query-params';
-import mongoose, { Types } from 'mongoose';
-@Injectable()
-export class BooksService {
-  constructor(
-    @InjectModel(Book.name) // tiêm model mapping   
-    private bookModel: SoftDeleteModel<BookDocument>
-  ) { }
+import { Types } from 'mongoose';
 
+@Injectable()
+export class CategoriesService {
+
+  constructor(
+    @InjectModel(Category.name) // tiêm model mapping
+    private categoryModel: SoftDeleteModel<CategoryDocument>
+  ) { }
 
   async checkTitle(title: string) {
     const isExistTitle = await this.findOneByTitle(title);
@@ -25,20 +26,21 @@ export class BooksService {
   }
 
 
-  async create(createBookDto: CreateBookDto, iUser: iUser) {
-    createBookDto.createdBy = {
+  async create(createCategoryDto: CreateCategoryDto, iUser: iUser) {
+    createCategoryDto.createdBy = {
       _id: iUser._id,
       email: iUser.email
     }
 
-    await this.checkTitle(createBookDto.title);
+    await this.checkTitle(createCategoryDto.name);
 
-    const newBook = await this.bookModel.create(createBookDto);
-    return newBook;
+    const newCategory = await this.categoryModel.create(createCategoryDto);
+    return newCategory;
   }
 
-  async findOneByTitle(title: string) {
-    const resultBook = await this.bookModel.findOne({ title: title }).exec();
+
+  async findOneByTitle(name: string) {
+    const resultBook = await this.categoryModel.findOne({ name: name }).exec();
     return resultBook;
   }
 
@@ -50,7 +52,7 @@ export class BooksService {
     let offset = (+currentPage - 1) * (+limit);
     let defaultLimit = +limit ? +limit : 10;
 
-    const totalItems = (await this.bookModel.find(filter)).length;
+    const totalItems = (await this.categoryModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
     // if (isEmpty(sort)) {
@@ -58,7 +60,7 @@ export class BooksService {
     //   sort = "-updatedAt"
     // }
 
-    const result = await this.bookModel.find(filter)
+    const result = await this.categoryModel.find(filter)
       .skip(offset)
       .limit(defaultLimit)
       .sort(sort as any)
@@ -80,26 +82,26 @@ export class BooksService {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException('ID không hợp lệ');
     }
-    const user = await this.bookModel.findOne({ _id: id }).exec();
+    const category = await this.categoryModel.findOne({ _id: id }).exec();
 
-    if (!user) {
-      throw new NotFoundException('Không tìm thấy sách');
+    if (!category) {
+      throw new NotFoundException('Không tìm thấy thể loại');
     }
-    return user;
+    return category;
   }
 
-  async update(id: string, updateBookDto: UpdateBookDto, user: iUser) {
+  async update(id: string, updateCategoryDto: UpdateCategoryDto, user: iUser) {
     // Kiểm tra xem id có hợp lệ hay không
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException(`ID ${id} không hợp lệ`);
     }
 
-    await this.checkTitle(updateBookDto.title);
+    await this.checkTitle(updateCategoryDto.name);
     // Thực hiện cập nhật bằng updateOne
-    const result = await this.bookModel.updateOne(
+    const result = await this.categoryModel.updateOne(
       { _id: id, },
       {
-        ...updateBookDto,
+        ...updateCategoryDto,
         $set: {
           updatedBy: {
             _id: user._id,
@@ -112,10 +114,10 @@ export class BooksService {
   }
 
   async remove(id: string, user: iUser) {
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException(`ID ${id} không hợp lệ`);
     }
-    await this.bookModel.updateOne(
+    await this.categoryModel.updateOne(
       { _id: id, },
       {
         $set: {
@@ -128,11 +130,8 @@ export class BooksService {
     );
 
     // Thực hiện cập nhật bằng updateOne
-    return await this.bookModel.softDelete(
+    return await this.categoryModel.softDelete(
       { _id: id, }
     );
   }
-
-
-
 }

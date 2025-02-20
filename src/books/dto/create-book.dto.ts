@@ -24,8 +24,15 @@ export class CreateBookDto {
     @IsNotEmpty({ message: 'Số lượng tồn không được để trống' })
     stock: number;
 
-    @IsNotEmpty({ message: 'Logo tồn không được để trống' })
-    logo: number;
+    description: string;
+
+    coverImage: string[];
+
+    logo: string;
+
+    publishedDate: Date;
+
+    rating: number;
 
     @ValidateNested()
     @Type(() => createdBy)

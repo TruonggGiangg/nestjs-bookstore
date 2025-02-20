@@ -52,7 +52,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         let checkPermission = false;
 
         checkPermission = user.permissions.some(permission =>
-            permission.apiPath === currentPermission.apiPath &&
+            currentPermission.apiPath.includes(permission.apiPath) &&
             permission.method === currentPermission.method
         );
 

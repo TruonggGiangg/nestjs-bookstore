@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Put } from '@
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
-import { User } from 'src/decorator/customize';
+import { Public, User } from 'src/decorator/customize';
 import { iUser } from 'src/users/user.interface';
 
 @Controller('roles')
@@ -26,6 +26,7 @@ export class RolesController {
     return this.rolesService.findAll(+currentPage, +limit, qs);
   }
 
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.rolesService.findOne(id);

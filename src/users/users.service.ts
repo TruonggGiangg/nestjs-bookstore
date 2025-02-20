@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import mongoose, { Model, Types } from 'mongoose';
 import { genSaltSync, hashSync, compareSync } from 'bcryptjs'
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, RegisterUserDto } from './dto/create-user.dto';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { iUser } from './user.interface';
 import aqp from 'api-query-params';
@@ -32,6 +32,8 @@ export class UsersService {
     const isExistEmail = await this.findOneByEmail(email);
     if (isExistEmail) {
       throw new BadRequestException("Email đã tồn tại")
+    } else {
+      return true
     }
   }
 
@@ -48,7 +50,7 @@ export class UsersService {
     return newUser
   }
 
-  async register(user: CreateUserDto) {
+  async register(user: RegisterUserDto | any) {
     await this.checkEmail(user.email)
     user.password = await this.getHashPassword(user.password)
     const newUser = this.userModel.create(user)
@@ -80,6 +82,7 @@ export class UsersService {
       .populate(population)
       .exec();
 
+    // result.map((x) => { delete x.password })
     return {
       meta: {
         currentPage: currentPage, //trang hiện tại
@@ -100,6 +103,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('Không tìm thấy user');
     }
+
     return user;
   }
 
@@ -107,6 +111,7 @@ export class UsersService {
     const user = await this.userModel.findOne({ email: email }).exec();
     return user;
   }
+
 
   async findOneByRefreshToken(token: string) {
     const user = await this.userModel.findOne({ refreshToken: token }).exec();
@@ -122,7 +127,7 @@ export class UsersService {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new NotFoundException(`ID ${id} không hợp lệ`);
     }
-    await this.checkEmail(updateUserDto.email)
+
     updateUserDto.password = await this.getHashPassword(updateUserDto.password);
 
     // Thực hiện cập nhật bằng updateOne

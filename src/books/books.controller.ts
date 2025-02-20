@@ -19,6 +19,7 @@ export class BooksController {
   }
 
   @Get()
+  @ResponseMessage("Lấy danh sách tất cả sách")
   findAll(
     @Query("current") currentPage: String,
     @Query("pageSize") limit: String,

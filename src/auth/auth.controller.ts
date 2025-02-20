@@ -4,6 +4,7 @@ import { LocalAuthGuard } from './passport/local-auth.grard';
 import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { Request, Response } from 'express';
 import { iUser } from 'src/users/user.interface';
+import { CreateUserDto, RegisterUserDto } from 'src/users/dto/create-user.dto';
 
 
 @Controller('auth')
@@ -27,14 +28,15 @@ export class AuthController {
   @Public()
   @ResponseMessage("Register")
   @Post('register')
-  handleRegister(@Body() user) {
+  handleRegister(@Body() user: RegisterUserDto) {
     return this.authService.register(user);
   }
 
-
+  @Public()
   @Get('profile')
   @ResponseMessage("Get profile")
   getProfile(@Req() req) {
+    console.log(req)
     return req.user;
   }
   //giải thích
@@ -43,8 +45,10 @@ export class AuthController {
 
   @ResponseMessage("Get user infomation")
   @Get('account')
-  handleGetAccount(@User() user: iUser) {
-    return { user };
+  handleGetAccount(
+    @User() iUser: iUser
+  ) {
+    return { user: iUser };
   }
 
 

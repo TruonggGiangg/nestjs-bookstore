@@ -11,6 +11,7 @@ import { FilesModule } from './files/files.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { RolesModule } from './roles/roles.module';
 import { DatabasesModule } from './databases/databases.module';
+import { CategoriesModule } from './categories/categories.module';
 @Module({
   imports: [
     MongooseModule.forRootAsync({
@@ -34,6 +35,7 @@ import { DatabasesModule } from './databases/databases.module';
     PermissionsModule,
     RolesModule,
     DatabasesModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

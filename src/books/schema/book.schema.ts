@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import mongoose, { HydratedDocument } from "mongoose";
+import mongoose, { HydratedDocument, Types } from "mongoose";
 
 export type BookDocument = HydratedDocument<Book>;
 
@@ -11,8 +11,8 @@ export class Book {
     @Prop({ required: true })
     author: string[];
 
-    @Prop({ required: true })
-    categories: string[];
+    @Prop({ type: [{ type: Types.ObjectId, ref: 'Categories' }] })
+    categories: Types.ObjectId[];
 
     @Prop({ required: true })
     price: number;
@@ -24,7 +24,10 @@ export class Book {
     description: string;
 
     @Prop()
-    coverImage: string;
+    coverImage: string[];
+
+    @Prop()
+    logo: string;
 
     @Prop()
     publishedDate: Date;
@@ -32,8 +35,6 @@ export class Book {
     @Prop()
     rating: number;
 
-    @Prop()
-    logo: string;
 
     @Prop({ type: [{ userId: mongoose.Schema.Types.ObjectId, comment: String, rating: Number, createdAt: Date }] })
     reviews: Array<{ userId: mongoose.Schema.Types.ObjectId, comment: string, rating: number, createdAt: Date }>;
@@ -45,7 +46,7 @@ export class Book {
     updatedAt?: Date
 
     @Prop()
-    isDeleted?: Date
+    isDeleted?: boolean
 
     @Prop()
     deletedAt?: Date
