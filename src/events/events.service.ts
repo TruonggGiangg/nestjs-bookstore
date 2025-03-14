@@ -16,7 +16,7 @@ export class EventsService {
 
 
   async checkName(nameEven: string) {
-    const isExistTitle = await this.findOneByName(nameEven);
+    const isExistTitle = await this.eventModel.findOne({ name: nameEven }).exec();
     if (isExistTitle) {
       throw new BadRequestException("Tên sự kiện đã tồn tại")
     } else {
@@ -30,7 +30,7 @@ export class EventsService {
       _id: iUser._id,
       email: iUser.email
     }
-    this.checkName(createEventDto.name);
+    await this.checkName(createEventDto.name);
     const event = this.eventModel.create(
       createEventDto
     );
