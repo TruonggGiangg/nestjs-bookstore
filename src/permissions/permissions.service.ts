@@ -81,12 +81,12 @@ export class PermissionsService {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException('ID không hợp lệ');
     }
-    const permission = await this.permissionsModel.findOne({ _id: id }).exec();
+    const user = await this.permissionsModel.findOne({ _id: id }).exec();
 
-    if (!permission) {
+    if (!user) {
       throw new NotFoundException('Không tìm thấy permission');
     }
-    return permission;
+    return user;
   }
 
   async update(id: string, updatePermissionDto: UpdatePermissionDto, iUser: iUser) {

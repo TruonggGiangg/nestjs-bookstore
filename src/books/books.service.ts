@@ -33,6 +33,7 @@ export class BooksService {
 
     await this.checkTitle(createBookDto.title);
 
+    createBookDto.attributes.publishedDate = new Date(createBookDto.attributes.publishedDate);
     const newBook = await this.bookModel.create(createBookDto);
     return newBook;
   }
@@ -46,7 +47,7 @@ export class BooksService {
     const { filter, sort, projection, population } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
-
+    console.log("Filter sau khi parse:", filter)
     let offset = (+currentPage - 1) * (+limit);
     let defaultLimit = +limit ? +limit : 10;
 
@@ -94,7 +95,7 @@ export class BooksService {
       throw new NotFoundException(`ID ${id} không hợp lệ`);
     }
 
-    await this.checkTitle(updateBookDto.title);
+
     // Thực hiện cập nhật bằng updateOne
     const result = await this.bookModel.updateOne(
       { _id: id, },

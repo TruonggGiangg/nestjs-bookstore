@@ -3,6 +3,16 @@ import mongoose, { HydratedDocument, Types } from "mongoose";
 
 export type BookDocument = HydratedDocument<Book>;
 
+
+//review
+@Schema({ timestamps: true })
+export class Review {
+    userId: Types.ObjectId | string;
+    comment: string;
+    rating: number;
+    createdAt: Date;
+}
+
 @Schema({ timestamps: true })
 export class Book {
     @Prop({ required: true, unique: true })
@@ -11,14 +21,17 @@ export class Book {
     @Prop({ type: [String] }) // Danh sách tác giả
     author: string[];
 
-    @Prop({ type: [{ type: Types.ObjectId, ref: "Categories" }], required: true })
-    categories: Types.ObjectId[];
+    @Prop()
+    isBook: boolean;
 
     @Prop({ required: true })
     price: number;
 
     @Prop({ required: true })
     stock: number;
+
+    @Prop()
+    sold: number;
 
     @Prop()
     description?: string;
@@ -30,34 +43,23 @@ export class Book {
     logo?: string;
 
     @Prop({
-        type: {
-            publisher: { type: String },
-            publishedYear: { type: Number },
-            pages: { type: Number },
-            language: { type: String },
-            isbn: { type: String }
-        }
+        type: Object
     })
     attributes?: {
         publisher?: string;
-        publishedYear?: number;
         pages?: number;
         language?: string;
+        classification?: Types.ObjectId[];
         isbn?: string;
+        publishedDate?: Date;
     };
 
-    @Prop()
-    publishedDate?: Date;
+    @Prop({ type: [Object] })
+    reviews?: Review[];
 
     @Prop()
     rating?: number;
 
-    @Prop({
-        type: [
-            { userId: Types.ObjectId, comment: String, rating: Number, createdAt: Date }
-        ]
-    })
-    reviews?: Array<{ userId: Types.ObjectId; comment: string; rating: number; createdAt: Date }>;
 
     @Prop()
     isDeleted?: boolean;
@@ -65,20 +67,23 @@ export class Book {
     @Prop()
     deletedAt?: Date;
 
-    @Prop({
-        type: { _id: Types.ObjectId, email: String }
-    })
-    createdBy?: { _id: Types.ObjectId; email: string };
+    @Prop({ type: Object })
+    createdBy?: {
+        _id: mongoose.Schema.Types.ObjectId,
+        email: string
+    }
 
-    @Prop({
-        type: { _id: Types.ObjectId, email: String }
-    })
-    updatedBy?: { _id: Types.ObjectId; email: string };
+    @Prop({ type: Object })
+    updatedBy?: {
+        _id: mongoose.Schema.Types.ObjectId,
+        email: string
+    }
 
-    @Prop({
-        type: { _id: Types.ObjectId, email: String }
-    })
-    deletedBy?: { _id: Types.ObjectId; email: string };
+    @Prop({ type: Object })
+    deletedBy?: {
+        _id: mongoose.Schema.Types.ObjectId,
+        email: string
+    }
 }
 
 export const BookSchema = SchemaFactory.createForClass(Book);

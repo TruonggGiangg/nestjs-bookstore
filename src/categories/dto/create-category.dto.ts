@@ -12,7 +12,12 @@ export class CreateCategoryDto {
     @IsNotEmpty({ message: 'Tên danh mục không được để trống' })
     name: string;
 
+    @IsNotEmpty({ message: "Có phải thuộc tính cho sách hay không không được để trống" })
+    isBook: boolean;
+
     description: string;
+
+
 
     image: string;
 

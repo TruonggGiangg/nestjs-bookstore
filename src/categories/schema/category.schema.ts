@@ -13,6 +13,10 @@ export class Category {
     @Prop()
     description: string;
 
+
+    @Prop({ required: true })
+    isBook: boolean;
+
     @Prop()
     image: string;
 
