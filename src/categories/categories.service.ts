@@ -96,7 +96,7 @@ export class CategoriesService {
       throw new NotFoundException(`ID ${id} không hợp lệ`);
     }
 
-    await this.checkTitle(updateCategoryDto.name);
+
     // Thực hiện cập nhật bằng updateOne
     const result = await this.categoryModel.updateOne(
       { _id: id, },
