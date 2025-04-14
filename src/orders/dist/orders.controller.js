@@ -19,17 +19,17 @@ var OrdersController = /** @class */ (function () {
     OrdersController.prototype.create = function (createOrderDto, iUser) {
         return this.ordersService.create(createOrderDto, iUser);
     };
-    OrdersController.prototype.findAll = function () {
-        return this.ordersService.findAll();
+    OrdersController.prototype.findAll = function (currentPage, limit, qs) {
+        return this.ordersService.findAll(currentPage, limit, qs);
     };
     OrdersController.prototype.findOne = function (id) {
-        return this.ordersService.findOne(+id);
+        return this.ordersService.findOneByID(id);
     };
-    OrdersController.prototype.update = function (id, updateOrderDto) {
-        return this.ordersService.update(+id, updateOrderDto);
+    OrdersController.prototype.update = function (id, updateOrderDto, iUser) {
+        return this.ordersService.update(id, updateOrderDto, iUser);
     };
-    OrdersController.prototype.remove = function (id) {
-        return this.ordersService.remove(+id);
+    OrdersController.prototype.remove = function (id, iUser) {
+        return this.ordersService.remove(id, iUser);
     };
     __decorate([
         common_1.Post(),
@@ -46,11 +46,14 @@ var OrdersController = /** @class */ (function () {
     ], OrdersController.prototype, "findOne");
     __decorate([
         common_1.Put(':id'),
-        __param(0, common_1.Param('id')), __param(1, common_1.Body())
+        __param(0, common_1.Param('id')),
+        __param(1, common_1.Body()),
+        __param(2, customize_1.User())
     ], OrdersController.prototype, "update");
     __decorate([
         common_1.Delete(':id'),
-        __param(0, common_1.Param('id'))
+        __param(0, common_1.Param('id')),
+        __param(1, customize_1.User())
     ], OrdersController.prototype, "remove");
     OrdersController = __decorate([
         common_1.Controller('orders')

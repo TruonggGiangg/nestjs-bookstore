@@ -19,22 +19,32 @@ export class OrdersController {
   }
 
   @Get()
-  findAll() {
-    return this.ordersService.findAll();
+  findAll(
+
+    currentPage: number, limit: number, qs: string
+  ) {
+    return this.ordersService.findAll(currentPage, limit, qs);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.ordersService.findOne(+id);
+    return this.ordersService.findOneByID(id);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.ordersService.update(+id, updateOrderDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateOrderDto: UpdateOrderDto,
+    @User() iUser: iUser
+  ) {
+    return this.ordersService.update(id, updateOrderDto, iUser);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ordersService.remove(+id);
+  remove(
+    @Param('id') id: string,
+    @User() iUser: iUser
+  ) {
+    return this.ordersService.remove(id, iUser);
   }
 }
