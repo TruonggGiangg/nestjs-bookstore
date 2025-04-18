@@ -28,6 +28,18 @@ export class BooksController {
     return this.booksService.findAll(+currentPage, +limit, qs);
   }
 
+
+
+  @Get('search')
+  @ResponseMessage('Tìm kiếm sách theo từ khóa')
+  async searchBooks(
+    @Query('keyword') keyword: string,
+    @Query('current') currentPage: string = '1',
+    @Query('pageSize') limit: string = '10',
+  ) {
+    return this.booksService.searchBooks(keyword, +currentPage, +limit);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.booksService.findOne(id);

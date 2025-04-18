@@ -56,19 +56,38 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.OrdersService = void 0;
+exports.BooksService = void 0;
 var common_1 = require("@nestjs/common");
+var book_schema_1 = require("./schema/book.schema");
 var mongoose_1 = require("@nestjs/mongoose");
-var order_schema_1 = require("./schema/order.schema");
 var api_query_params_1 = require("api-query-params");
 var mongoose_2 = require("mongoose");
-var OrdersService = /** @class */ (function () {
-    function OrdersService(orderModel) {
-        this.orderModel = orderModel;
+var BooksService = /** @class */ (function () {
+    function BooksService(bookModel) {
+        this.bookModel = bookModel;
     }
-    OrdersService.prototype.create = function (createBookDto, iUser) {
+    BooksService.prototype.checkTitle = function (title) {
         return __awaiter(this, void 0, void 0, function () {
-            var newOrder;
+            var isExistTitle;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.findOneByTitle(title)];
+                    case 1:
+                        isExistTitle = _a.sent();
+                        if (isExistTitle) {
+                            throw new common_1.BadRequestException("Title đã tồn tại");
+                        }
+                        else {
+                            return [2 /*return*/, true];
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    BooksService.prototype.create = function (createBookDto, iUser) {
+        return __awaiter(this, void 0, void 0, function () {
+            var newBook;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -76,35 +95,66 @@ var OrdersService = /** @class */ (function () {
                             _id: iUser._id,
                             email: iUser.email
                         };
-                        return [4 /*yield*/, this.orderModel.create(createBookDto)];
+                        return [4 /*yield*/, this.checkTitle(createBookDto.title)];
                     case 1:
-                        newOrder = _a.sent();
-                        return [2 /*return*/, newOrder];
+                        _a.sent();
+                        createBookDto.attributes.publishedDate = new Date(createBookDto.attributes.publishedDate);
+                        return [4 /*yield*/, this.bookModel.create(createBookDto)];
+                    case 2:
+                        newBook = _a.sent();
+                        return [2 /*return*/, newBook];
                 }
             });
         });
     };
-    OrdersService.prototype.findOneByID = function (id) {
+    BooksService.prototype.findOneByTitle = function (title) {
         return __awaiter(this, void 0, void 0, function () {
-            var user;
+            var resultBook;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        if (!mongoose_2.Types.ObjectId.isValid(id)) {
-                            throw new common_1.NotFoundException('ID không hợp lệ');
-                        }
-                        return [4 /*yield*/, this.orderModel.findOne({ _id: id }).exec()];
+                    case 0: return [4 /*yield*/, this.bookModel.findOne({ title: title }).exec()];
                     case 1:
-                        user = _a.sent();
-                        if (!user) {
-                            throw new common_1.NotFoundException('Không tìm thấy đơn');
-                        }
-                        return [2 /*return*/, user];
+                        resultBook = _a.sent();
+                        return [2 /*return*/, resultBook];
                 }
             });
         });
     };
-    OrdersService.prototype.findAll = function (currentPage, limit, qs) {
+    BooksService.prototype.searchBooks = function (keyword, currentPage, pageSize) {
+        if (currentPage === void 0) { currentPage = 1; }
+        if (pageSize === void 0) { pageSize = 10; }
+        return __awaiter(this, void 0, void 0, function () {
+            var skip, _a, data, totalItems, totalPages;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        skip = (currentPage - 1) * pageSize;
+                        return [4 /*yield*/, Promise.all([
+                                this.bookModel
+                                    .find({ $text: { $search: keyword } }, { score: { $meta: 'textScore' } })
+                                    .sort({ score: { $meta: 'textScore' } })
+                                    .skip(skip)
+                                    .limit(pageSize)
+                                    .exec(),
+                                this.bookModel.countDocuments({ $text: { $search: keyword } }),
+                            ])];
+                    case 1:
+                        _a = _b.sent(), data = _a[0], totalItems = _a[1];
+                        totalPages = Math.ceil(totalItems / pageSize);
+                        return [2 /*return*/, {
+                                meta: {
+                                    currentPage: currentPage,
+                                    pageSize: pageSize,
+                                    pages: totalPages,
+                                    total: totalItems
+                                },
+                                result: data
+                            }];
+                }
+            });
+        });
+    };
+    BooksService.prototype.findAll = function (currentPage, limit, qs) {
         return __awaiter(this, void 0, void 0, function () {
             var _a, filter, sort, projection, population, offset, defaultLimit, totalItems, totalPages, result;
             return __generator(this, function (_b) {
@@ -116,11 +166,11 @@ var OrdersService = /** @class */ (function () {
                         console.log("Filter sau khi parse:", filter);
                         offset = (+currentPage - 1) * (+limit);
                         defaultLimit = +limit ? +limit : 10;
-                        return [4 /*yield*/, this.orderModel.find(filter)];
+                        return [4 /*yield*/, this.bookModel.find(filter)];
                     case 1:
                         totalItems = (_b.sent()).length;
                         totalPages = Math.ceil(totalItems / defaultLimit);
-                        return [4 /*yield*/, this.orderModel.find(filter)
+                        return [4 /*yield*/, this.bookModel.find(filter)
                                 .skip(offset)
                                 .limit(defaultLimit)
                                 .sort(sort)
@@ -141,7 +191,27 @@ var OrdersService = /** @class */ (function () {
             });
         });
     };
-    OrdersService.prototype.update = function (id, updateOrderkDto, user) {
+    BooksService.prototype.findOne = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var user;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!mongoose_2.Types.ObjectId.isValid(id)) {
+                            throw new common_1.NotFoundException('ID không hợp lệ');
+                        }
+                        return [4 /*yield*/, this.bookModel.findOne({ _id: id }).exec()];
+                    case 1:
+                        user = _a.sent();
+                        if (!user) {
+                            throw new common_1.NotFoundException('Không tìm thấy sách');
+                        }
+                        return [2 /*return*/, user];
+                }
+            });
+        });
+    };
+    BooksService.prototype.update = function (id, updateBookDto, user) {
         return __awaiter(this, void 0, void 0, function () {
             var result;
             return __generator(this, function (_a) {
@@ -151,7 +221,7 @@ var OrdersService = /** @class */ (function () {
                         if (!mongoose_2["default"].Types.ObjectId.isValid(id)) {
                             throw new common_1.NotFoundException("ID " + id + " kh\u00F4ng h\u1EE3p l\u1EC7");
                         }
-                        return [4 /*yield*/, this.orderModel.updateOne({ _id: id }, __assign(__assign({}, updateOrderkDto), { $set: {
+                        return [4 /*yield*/, this.bookModel.updateOne({ _id: id }, __assign(__assign({}, updateBookDto), { $set: {
                                     updatedBy: {
                                         _id: user._id,
                                         name: user.name
@@ -164,7 +234,7 @@ var OrdersService = /** @class */ (function () {
             });
         });
     };
-    OrdersService.prototype.remove = function (id, user) {
+    BooksService.prototype.remove = function (id, user) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -172,7 +242,7 @@ var OrdersService = /** @class */ (function () {
                         if (!mongoose_2["default"].Types.ObjectId.isValid(id)) {
                             throw new common_1.NotFoundException("ID " + id + " kh\u00F4ng h\u1EE3p l\u1EC7");
                         }
-                        return [4 /*yield*/, this.orderModel.updateOne({ _id: id }, {
+                        return [4 /*yield*/, this.bookModel.updateOne({ _id: id }, {
                                 $set: {
                                     deletedBy: {
                                         _id: user._id,
@@ -182,7 +252,7 @@ var OrdersService = /** @class */ (function () {
                             })];
                     case 1:
                         _a.sent();
-                        return [4 /*yield*/, this.orderModel.softDelete({ _id: id })];
+                        return [4 /*yield*/, this.bookModel.softDelete({ _id: id })];
                     case 2: 
                     // Thực hiện cập nhật bằng updateOne
                     return [2 /*return*/, _a.sent()];
@@ -190,10 +260,10 @@ var OrdersService = /** @class */ (function () {
             });
         });
     };
-    OrdersService = __decorate([
+    BooksService = __decorate([
         common_1.Injectable(),
-        __param(0, mongoose_1.InjectModel(order_schema_1.Order.name))
-    ], OrdersService);
-    return OrdersService;
+        __param(0, mongoose_1.InjectModel(book_schema_1.Book.name))
+    ], BooksService);
+    return BooksService;
 }());
-exports.OrdersService = OrdersService;
+exports.BooksService = BooksService;

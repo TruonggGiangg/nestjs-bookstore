@@ -43,6 +43,36 @@ export class BooksService {
     return resultBook;
   }
 
+  async searchBooks(keyword: string, currentPage = 1, pageSize = 10) {
+    const skip = (currentPage - 1) * pageSize;
+
+    const [data, totalItems] = await Promise.all([
+      this.bookModel
+        .find(
+          { $text: { $search: keyword } },
+          { score: { $meta: 'textScore' } },
+        )
+        .sort({ score: { $meta: 'textScore' } })
+        .skip(skip)
+        .limit(pageSize)
+        .exec(),
+
+      this.bookModel.countDocuments({ $text: { $search: keyword } }),
+    ]);
+
+    const totalPages = Math.ceil(totalItems / pageSize);
+
+    return {
+      meta: {
+        currentPage,
+        pageSize,
+        pages: totalPages,
+        total: totalItems,
+      },
+      result: data,
+    };
+  }
+
   async findAll(currentPage: number, limit: number, qs: string) {
     const { filter, sort, projection, population } = aqp(qs);
     delete filter.current;

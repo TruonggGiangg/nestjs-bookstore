@@ -6,7 +6,7 @@ import { Order, OrderDocument } from './schema/order.schema';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { iUser } from 'src/users/user.interface';
 import aqp from 'api-query-params';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 @Injectable()
 export class OrdersService {
@@ -28,9 +28,16 @@ export class OrdersService {
     return newOrder;
   }
 
-  async findOneByTitle(id: string) {
-    const resultOrder = await this.orderModel.findOne({ __id: id }).exec();
-    return resultOrder;
+  async findOneByID(id: string) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new NotFoundException('ID không hợp lệ');
+    }
+    const user = await this.orderModel.findOne({ _id: id }).exec();
+
+    if (!user) {
+      throw new NotFoundException('Không tìm thấy đơn');
+    }
+    return user;
   }
 
 

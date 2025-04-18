@@ -64,6 +64,10 @@ var ReviewDto = /** @class */ (function () {
         class_validator_1.IsNotEmpty({ message: "UserId không được để trống" })
     ], ReviewDto.prototype, "userId");
     __decorate([
+        class_validator_1.IsNotEmpty({ message: "userName không được để trống" }),
+        class_validator_1.IsString()
+    ], ReviewDto.prototype, "userName");
+    __decorate([
         class_validator_1.IsNotEmpty({ message: "Comment không được để trống" }),
         class_validator_1.IsString()
     ], ReviewDto.prototype, "comment");

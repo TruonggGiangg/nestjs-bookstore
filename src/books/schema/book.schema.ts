@@ -8,6 +8,7 @@ export type BookDocument = HydratedDocument<Book>;
 @Schema({ timestamps: true })
 export class Review {
     userId: Types.ObjectId | string;
+    userName: string;
     comment: string;
     rating: number;
     createdAt: Date;
@@ -84,6 +85,14 @@ export class Book {
         _id: mongoose.Schema.Types.ObjectId,
         email: string
     }
+
+
 }
 
 export const BookSchema = SchemaFactory.createForClass(Book);
+
+BookSchema.index({
+    title: 'text',
+    author: 'text',
+    description: 'text',
+});

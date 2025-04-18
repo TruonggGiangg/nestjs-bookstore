@@ -45,6 +45,10 @@ export class ReviewDto {
     @IsNotEmpty({ message: "UserId không được để trống" })
     userId: Types.ObjectId | string;
 
+    @IsNotEmpty({ message: "userName không được để trống" })
+    @IsString()
+    userName: string;
+
     @IsNotEmpty({ message: "Comment không được để trống" })
     @IsString()
     comment: string;
