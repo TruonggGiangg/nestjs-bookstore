@@ -120,6 +120,37 @@ var BooksService = /** @class */ (function () {
             });
         });
     };
+    BooksService.prototype.updateSoldAndStock = function (bookId, soldChange) {
+        return __awaiter(this, void 0, void 0, function () {
+            var book, newSold, newStock;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.bookModel.findById(bookId)];
+                    case 1:
+                        book = _a.sent();
+                        if (!book) {
+                            throw new common_1.NotFoundException('Book not found');
+                        }
+                        // Kiểm tra còn hàng không
+                        if ((book.stock || 0) < soldChange) {
+                            throw new common_1.BadRequestException("Not enough stock for " + book.title);
+                        }
+                        newSold = (book.sold || 0) + (soldChange || 0);
+                        newStock = (book.stock || 0) - (soldChange || 0);
+                        if (isNaN(newSold) || isNaN(newStock)) {
+                            throw new common_1.BadRequestException('Invalid sold/stock value');
+                        }
+                        return [4 /*yield*/, this.bookModel.findByIdAndUpdate(bookId, {
+                                sold: newSold,
+                                stock: newStock
+                            })];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     BooksService.prototype.searchBooks = function (keyword, currentPage, pageSize) {
         if (currentPage === void 0) { currentPage = 1; }
         if (pageSize === void 0) { pageSize = 10; }

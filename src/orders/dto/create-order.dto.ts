@@ -54,6 +54,9 @@ export class CreateOrderDto {
     @ValidateNested({ message: "Thông tin người tạo không hợp lệ" })
     @Type(() => CreatedByDto)
     createdBy: CreatedByDto;
+
+    @IsString({ message: "Địa chỉ giao hàng phải là chuỗi" })
+    shippingAddress: string;
 }
 
 

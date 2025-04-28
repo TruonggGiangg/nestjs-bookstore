@@ -7,26 +7,47 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { iUser } from 'src/users/user.interface';
 import aqp from 'api-query-params';
 import mongoose, { Types } from 'mongoose';
+import { BooksService } from 'src/books/books.service';
 
 @Injectable()
 export class OrdersService {
 
   constructor(
     @InjectModel(Order.name) // tiêm model mapping   
-    private orderModel: SoftDeleteModel<OrderDocument>
+    private orderModel: SoftDeleteModel<OrderDocument>,
+    private booksService: BooksService
   ) { }
 
 
 
-  async create(createBookDto: CreateOrderDto, iUser: iUser) {
-    createBookDto.createdBy = {
+  async create(createOrderDto: CreateOrderDto, iUser: iUser) {
+    createOrderDto.createdBy = {
       _id: iUser._id,
-      email: iUser.email
-    }
+      email: iUser.email,
+    };
 
-    const newOrder = await this.orderModel.create(createBookDto);
-    return newOrder;
+    const session = await this.orderModel.db.startSession();
+    session.startTransaction();
+    try {
+      // 1. Tạo mới đơn hàng
+      const newOrder = await this.orderModel.create([createOrderDto], { session });
+
+      // 2. Duyệt từng item để update book (sold và stock)
+      for (const item of createOrderDto.items) {
+        await this.booksService.updateSoldAndStock(item.productId, item.quantity);
+      }
+
+      await session.commitTransaction();
+      session.endSession();
+
+      return newOrder[0];
+    } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+      throw error;
+    }
   }
+
 
   async findOneByID(id: string) {
     if (!Types.ObjectId.isValid(id)) {
@@ -53,11 +74,6 @@ export class OrdersService {
     const totalItems = (await this.orderModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
-    // if (isEmpty(sort)) {
-    //   // @ts-ignore: Unreachable code error
-    //   sort = "-updatedAt"
-    // }
-
     const result = await this.orderModel.find(filter)
       .skip(offset)
       .limit(defaultLimit)
@@ -81,6 +97,7 @@ export class OrdersService {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new NotFoundException(`ID ${id} không hợp lệ`);
     }
+
 
 
     // Thực hiện cập nhật bằng updateOne

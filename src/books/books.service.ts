@@ -42,6 +42,31 @@ export class BooksService {
     const resultBook = await this.bookModel.findOne({ title: title }).exec();
     return resultBook;
   }
+  async updateSoldAndStock(bookId: string, soldChange: number) {
+    const book = await this.bookModel.findById(bookId);
+    if (!book) {
+      throw new NotFoundException('Book not found');
+    }
+
+    // Kiểm tra còn hàng không
+    if ((book.stock || 0) < soldChange) {
+      throw new BadRequestException(`Not enough stock for ${book.title}`);
+    }
+
+    const newSold = (book.sold || 0) + (soldChange || 0);
+    const newStock = (book.stock || 0) - (soldChange || 0);
+
+    if (isNaN(newSold) || isNaN(newStock)) {
+      throw new BadRequestException('Invalid sold/stock value');
+    }
+
+    await this.bookModel.findByIdAndUpdate(bookId, {
+      sold: newSold,
+      stock: newStock,
+    });
+  }
+
+
 
   async searchBooks(keyword: string, currentPage = 1, pageSize = 10) {
     const skip = (currentPage - 1) * pageSize;

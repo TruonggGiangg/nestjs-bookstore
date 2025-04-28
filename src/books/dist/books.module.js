@@ -21,7 +21,8 @@ var BooksModule = /** @class */ (function () {
                 mongoose_1.MongooseModule.forFeature([{ name: book_schema_1.Book.name, schema: book_schema_1.BookSchema }])
             ],
             controllers: [books_controller_1.BooksController],
-            providers: [books_service_1.BooksService]
+            providers: [books_service_1.BooksService],
+            exports: [books_service_1.BooksService]
         })
     ], BooksModule);
     return BooksModule;

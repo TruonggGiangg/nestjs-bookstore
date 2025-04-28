@@ -8,6 +8,7 @@ import { Book, BookSchema } from './schema/book.schema';
   imports: [
     MongooseModule.forFeature([{ name: Book.name, schema: BookSchema }])],
   controllers: [BooksController],
-  providers: [BooksService]
+  providers: [BooksService],
+  exports: [BooksService], // <== bắt buộc
 })
 export class BooksModule { }

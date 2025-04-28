@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Put } from '@
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { iUser } from 'src/users/user.interface';
 
 @Controller('events')
@@ -18,6 +18,8 @@ export class EventsController {
     return this.eventsService.create(createEventDto, iUser);
   }
 
+
+  @Public()
   @Get()
   @ResponseMessage("Lấy tất cả sự kiện")
   findAll(
@@ -29,6 +31,7 @@ export class EventsController {
     return this.eventsService.findAll(+currentPage, +limit, qs);
   }
 
+  @Public()
   @Get(':id')
   @ResponseMessage("Lấy sự kiện theo id")
   findOne(

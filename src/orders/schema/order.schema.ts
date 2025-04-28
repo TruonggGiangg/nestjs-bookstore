@@ -34,6 +34,21 @@ export class Order {
     @Prop()
     totalAmount: number;
 
+    @Prop({ type: String, required: true })
+    shippingAddress: string;
+
+    @Prop()
+    createdAt?: Date
+
+    @Prop()
+    updatedAt?: Date
+
+    @Prop()
+    isDeleted?: boolean
+
+    @Prop()
+    deletedAt?: Date
+
     @Prop({ type: Object })
     createdBy?: {
         _id: mongoose.Schema.Types.ObjectId,

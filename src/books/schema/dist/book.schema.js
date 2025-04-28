@@ -61,6 +61,12 @@ var Book = /** @class */ (function () {
     ], Book.prototype, "rating");
     __decorate([
         mongoose_1.Prop()
+    ], Book.prototype, "createdAt");
+    __decorate([
+        mongoose_1.Prop()
+    ], Book.prototype, "updatedAt");
+    __decorate([
+        mongoose_1.Prop()
     ], Book.prototype, "isDeleted");
     __decorate([
         mongoose_1.Prop()

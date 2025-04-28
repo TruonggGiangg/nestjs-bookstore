@@ -68,6 +68,9 @@ var CreateOrderDto = /** @class */ (function () {
         class_validator_1.ValidateNested({ message: "Thông tin người tạo không hợp lệ" }),
         class_transformer_1.Type(function () { return CreatedByDto; })
     ], CreateOrderDto.prototype, "createdBy");
+    __decorate([
+        class_validator_1.IsString({ message: "Địa chỉ giao hàng phải là chuỗi" })
+    ], CreateOrderDto.prototype, "shippingAddress");
     return CreateOrderDto;
 }());
 exports.CreateOrderDto = CreateOrderDto;

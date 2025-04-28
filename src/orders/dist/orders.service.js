@@ -63,23 +63,55 @@ var order_schema_1 = require("./schema/order.schema");
 var api_query_params_1 = require("api-query-params");
 var mongoose_2 = require("mongoose");
 var OrdersService = /** @class */ (function () {
-    function OrdersService(orderModel) {
+    function OrdersService(orderModel, booksService) {
         this.orderModel = orderModel;
+        this.booksService = booksService;
     }
-    OrdersService.prototype.create = function (createBookDto, iUser) {
+    OrdersService.prototype.create = function (createOrderDto, iUser) {
         return __awaiter(this, void 0, void 0, function () {
-            var newOrder;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var session, newOrder, _i, _a, item, error_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        createBookDto.createdBy = {
+                        createOrderDto.createdBy = {
                             _id: iUser._id,
                             email: iUser.email
                         };
-                        return [4 /*yield*/, this.orderModel.create(createBookDto)];
+                        return [4 /*yield*/, this.orderModel.db.startSession()];
                     case 1:
-                        newOrder = _a.sent();
-                        return [2 /*return*/, newOrder];
+                        session = _b.sent();
+                        session.startTransaction();
+                        _b.label = 2;
+                    case 2:
+                        _b.trys.push([2, 9, , 11]);
+                        return [4 /*yield*/, this.orderModel.create([createOrderDto], { session: session })];
+                    case 3:
+                        newOrder = _b.sent();
+                        _i = 0, _a = createOrderDto.items;
+                        _b.label = 4;
+                    case 4:
+                        if (!(_i < _a.length)) return [3 /*break*/, 7];
+                        item = _a[_i];
+                        return [4 /*yield*/, this.booksService.updateSoldAndStock(item.productId, item.quantity)];
+                    case 5:
+                        _b.sent();
+                        _b.label = 6;
+                    case 6:
+                        _i++;
+                        return [3 /*break*/, 4];
+                    case 7: return [4 /*yield*/, session.commitTransaction()];
+                    case 8:
+                        _b.sent();
+                        session.endSession();
+                        return [2 /*return*/, newOrder[0]];
+                    case 9:
+                        error_1 = _b.sent();
+                        return [4 /*yield*/, session.abortTransaction()];
+                    case 10:
+                        _b.sent();
+                        session.endSession();
+                        throw error_1;
+                    case 11: return [2 /*return*/];
                 }
             });
         });

@@ -3,11 +3,12 @@ import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { iUser } from 'src/users/user.interface';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
 
 @Controller('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) { }
+
 
   @Post()
   @ResponseMessage("Tạo sách")
@@ -18,6 +19,7 @@ export class BooksController {
     return this.booksService.create(createBookDto, iUser);
   }
 
+  @Public()
   @Get()
   @ResponseMessage("Lấy danh sách tất cả sách")
   findAll(
@@ -29,7 +31,7 @@ export class BooksController {
   }
 
 
-
+  @Public()
   @Get('search')
   @ResponseMessage('Tìm kiếm sách theo từ khóa')
   async searchBooks(
@@ -40,6 +42,7 @@ export class BooksController {
     return this.booksService.searchBooks(keyword, +currentPage, +limit);
   }
 
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.booksService.findOne(id);

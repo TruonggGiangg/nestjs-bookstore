@@ -47,6 +47,21 @@ var Order = /** @class */ (function () {
         mongoose_1.Prop()
     ], Order.prototype, "totalAmount");
     __decorate([
+        mongoose_1.Prop({ type: String, required: true })
+    ], Order.prototype, "shippingAddress");
+    __decorate([
+        mongoose_1.Prop()
+    ], Order.prototype, "createdAt");
+    __decorate([
+        mongoose_1.Prop()
+    ], Order.prototype, "updatedAt");
+    __decorate([
+        mongoose_1.Prop()
+    ], Order.prototype, "isDeleted");
+    __decorate([
+        mongoose_1.Prop()
+    ], Order.prototype, "deletedAt");
+    __decorate([
         mongoose_1.Prop({ type: Object })
     ], Order.prototype, "createdBy");
     __decorate([

@@ -90,6 +90,7 @@ var BooksController = /** @class */ (function () {
         __param(1, customize_1.User())
     ], BooksController.prototype, "create");
     __decorate([
+        customize_1.Public(),
         common_1.Get(),
         customize_1.ResponseMessage("Lấy danh sách tất cả sách"),
         __param(0, common_1.Query("current")),
@@ -97,6 +98,7 @@ var BooksController = /** @class */ (function () {
         __param(2, common_1.Query())
     ], BooksController.prototype, "findAll");
     __decorate([
+        customize_1.Public(),
         common_1.Get('search'),
         customize_1.ResponseMessage('Tìm kiếm sách theo từ khóa'),
         __param(0, common_1.Query('keyword')),
@@ -104,6 +106,7 @@ var BooksController = /** @class */ (function () {
         __param(2, common_1.Query('pageSize'))
     ], BooksController.prototype, "searchBooks");
     __decorate([
+        customize_1.Public(),
         common_1.Get(':id'),
         __param(0, common_1.Param('id'))
     ], BooksController.prototype, "findOne");

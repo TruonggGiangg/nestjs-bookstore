@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Query } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { iUser } from 'src/users/user.interface';
 
 @Controller('orders')
@@ -18,14 +18,19 @@ export class OrdersController {
     return this.ordersService.create(createOrderDto, iUser);
   }
 
+  @Public()
   @Get()
+  @ResponseMessage("Lấy danh sách tất cả hóa đơn")
   findAll(
-
-    currentPage: number, limit: number, qs: string
+    @Query("current") currentPage: String,
+    @Query("pageSize") limit: String,
+    @Query() qs
   ) {
-    return this.ordersService.findAll(currentPage, limit, qs);
+    return this.ordersService.findAll(+currentPage, +limit, qs);
   }
 
+
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.ordersService.findOneByID(id);

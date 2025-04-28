@@ -63,10 +63,16 @@ export class Book {
 
 
     @Prop()
-    isDeleted?: boolean;
+    createdAt?: Date
 
     @Prop()
-    deletedAt?: Date;
+    updatedAt?: Date
+
+    @Prop()
+    isDeleted?: boolean
+
+    @Prop()
+    deletedAt?: Date
 
     @Prop({ type: Object })
     createdBy?: {

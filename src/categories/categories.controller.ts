@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Query, Put } fr
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { iUser } from 'src/users/user.interface';
 
 @Controller('categories')
@@ -18,7 +18,7 @@ export class CategoriesController {
     return this.categoriesService.create(createCategoryDto, iUser);
   }
 
-
+  @Public()
   @Get()
   @ResponseMessage("Lấy danh sách tất cả danh mục")
   findAll(
@@ -29,6 +29,7 @@ export class CategoriesController {
     return this.categoriesService.findAll(+currentPage, +limit, qs);
   }
 
+  @Public()
   @Get(':id')
   @ResponseMessage("Lấy danh một danh mục")
   findOne(@Param('id') id: string) {
