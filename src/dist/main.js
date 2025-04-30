@@ -67,7 +67,7 @@ function bootstrap() {
                     app.useGlobalGuards(new jwt_auth_guard_1.JwtAuthGuard(reflector, permissionService)); //use guard
                     //định dạng cors
                     app.enableCors({
-                        origin: true,
+                        origin: ['http://localhost:5173', 'https://your-frontend-domain.com'],
                         methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
                         preflightContinue: false,
                         credentials: true
