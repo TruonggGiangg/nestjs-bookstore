@@ -43,7 +43,7 @@ async function bootstrap() {
   //định dạng cors
   app.enableCors(
     {
-      origin: 'http://localhost:5173',
+      origin: true,
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
       preflightContinue: false,
       credentials: true
