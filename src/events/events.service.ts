@@ -3,10 +3,11 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
-import { Event, EventDocument } from './schema/Event.schema';
+
 import { Types } from 'mongoose';
 import { iUser } from 'src/users/user.interface';
 import aqp from 'api-query-params';
+import { EventDocument } from './schema/event.schema';
 @Injectable()
 export class EventsService {
   constructor(
