@@ -67,7 +67,7 @@ function bootstrap() {
                     app.useGlobalGuards(new jwt_auth_guard_1.JwtAuthGuard(reflector, permissionService)); //use guard
                     //định dạng cors
                     app.enableCors({
-                        origin: ['http://localhost:5173', 'https://your-frontend-domain.com'],
+                        origin: ['http://localhost:5173', 'https://book-store-react-vite-v1.vercel.app'],
                         methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
                         preflightContinue: false,
                         credentials: true

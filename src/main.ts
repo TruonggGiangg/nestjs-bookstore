@@ -43,7 +43,7 @@ async function bootstrap() {
   //định dạng cors
   app.enableCors(
     {
-      origin: ['http://localhost:5173', 'https://your-frontend-domain.com'],
+      origin: ['http://localhost:5173', 'https://book-store-react-vite-v1.vercel.app'],
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
       preflightContinue: false,
       credentials: true
