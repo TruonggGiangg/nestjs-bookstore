@@ -37,6 +37,9 @@ export class Order {
     @Prop({ type: String, required: true })
     shippingAddress: string;
 
+    @Prop({ required: true })
+    numberPhone: string
+
     @Prop()
     createdAt?: Date
 

@@ -71,6 +71,10 @@ var CreateOrderDto = /** @class */ (function () {
     __decorate([
         class_validator_1.IsString({ message: "Địa chỉ giao hàng phải là chuỗi" })
     ], CreateOrderDto.prototype, "shippingAddress");
+    __decorate([
+        class_validator_1.IsString({ message: "Số điện thoại phải là chuỗi" }),
+        class_validator_1.IsNotEmpty({ message: "Số điện thoại không được để trống" })
+    ], CreateOrderDto.prototype, "numberPhone");
     return CreateOrderDto;
 }());
 exports.CreateOrderDto = CreateOrderDto;

@@ -57,6 +57,10 @@ export class CreateOrderDto {
 
     @IsString({ message: "Địa chỉ giao hàng phải là chuỗi" })
     shippingAddress: string;
+
+    @IsString({ message: "Số điện thoại phải là chuỗi" })
+    @IsNotEmpty({ message: "Số điện thoại không được để trống" })
+    numberPhone: string;
 }
 
 

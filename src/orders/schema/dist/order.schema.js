@@ -50,6 +50,9 @@ var Order = /** @class */ (function () {
         mongoose_1.Prop({ type: String, required: true })
     ], Order.prototype, "shippingAddress");
     __decorate([
+        mongoose_1.Prop({ required: true })
+    ], Order.prototype, "numberPhone");
+    __decorate([
         mongoose_1.Prop()
     ], Order.prototype, "createdAt");
     __decorate([
